@@ -3,32 +3,6 @@ import pandas as pd
 import numpy as np
 
 
-# remove quotes
-def strip_quotations_newline(text):
-    text = text.rstrip()
-    if text[0] == '"':
-        text = text[1:]
-    if text[-1] == '"':
-        text = text[:-1]
-    return text
-
-
-# add spaces
-def expand_around_chars(text, characters):
-    for char in characters:
-        text = text.replace(char, " " + char + " ")
-    return text
-
-
-def split_text(text):
-    text = strip_quotations_newline(text)
-    text = expand_around_chars(text, '".,()[]{}:;')
-    splitted_text = text.split(" ")
-    cleaned_text = [x for x in splitted_text if len(x) > 1]
-    text_lowercase = [x.lower() for x in cleaned_text]
-    return text_lowercase
-
-
 def normalize_col(col):
     return col - np.mean(col)
 
