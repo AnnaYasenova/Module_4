@@ -2,6 +2,7 @@ from collections import Counter
 import pandas as pd
 import numpy as np
 
+
 # remove quotes
 def strip_quotations_newline(text):
     text = text.rstrip()
@@ -11,11 +12,13 @@ def strip_quotations_newline(text):
         text = text[:-1]
     return text
 
+
 # add spaces
 def expand_around_chars(text, characters):
     for char in characters:
         text = text.replace(char, " " + char + " ")
     return text
+
 
 def split_text(text):
     text = strip_quotations_newline(text)
@@ -25,38 +28,32 @@ def split_text(text):
     text_lowercase = [x.lower() for x in cleaned_text]
     return text_lowercase
 
-def pow10(x):
-    num = 1;
-    while ((num * 10) < x):
-        num *= 10.0;
-    return num
 
-def normalize_col(col, method):
-    colMean = np.mean(col)
-    if method == 'pow10':
-        return col / pow10(np.max(col))
-    else:
-        return col - colMean
+def normalize_col(col):
+    return col - np.mean(col)
+
 
 def normalize_matrix(X):
     nRow, nCol = np.shape(X)
     X_norm = np.zeros(shape=(nRow, nCol))
     X_norm[:, 0] = X[:, 0]
     for i in range(1, nCol):
-        X_norm[:, i] = normalize_col(X[:, i], 'mean')
+        X_norm[:, i] = normalize_col(X[:, i])
     return X_norm
+
 
 # load dataset
 def iris():
     df = pd.read_csv('iris.csv', header = None)
     # 70% train, 30% test
-    df_train = df.sample(frac = 0.7)
+    df_train = df.sample(frac=0.7)
     df_test = df.loc[~df.index.isin(df_train.index)]
     X_train = df_train.values[:, 0:4].astype(float)
     Y_train = df_train.values[:, 4]
     X_test = df_test.values[:, 0:4].astype(float)
     Y_test = df_test.values[:, 4]
     return X_train, Y_train, X_test, Y_test
+
 
 def true_positives(determined_Y, real_Y, label):
     true_positives = 0
@@ -65,8 +62,10 @@ def true_positives(determined_Y, real_Y, label):
             true_positives += 1
     return true_positives
 
+
 def all_positives(determined_Y, label):
     return Counter(determined_Y)[label]
+
 
 def false_negatives(determined_Y, real_Y, label):
     false_negatives = 0
@@ -146,6 +145,7 @@ class LogisticRegression():
         predicted_Y = self.sigmoid(X)
         predicted_Y_binary = np.round(predicted_Y)
         return predicted_Y_binary
+
 
 def main():
     arr = {1: {'Iris-setosa': 1, 'Iris-versicolor': 0, 'Iris-virginica': 0},
