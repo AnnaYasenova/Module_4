@@ -23,6 +23,7 @@ def loadData(fileName):
     shuffle(items)
     return items
 
+
 # supporting function
 def findMinMaxCol(items):
     n = len(items[0])
@@ -38,12 +39,14 @@ def findMinMaxCol(items):
                 maxVal[el] = item[el]
     return minVal, maxVal
 
+
 # calculating euclidean distance
 def euclidDist(x, y):
     S = 0
     for i in range(len(x)):
         S += math.pow(x[i] - y[i], 2)
     return math.sqrt(S)
+
 
 # initializing means to random number from [min;max] of each feature
 def initMeans(items, k, minCol, maxCol):
@@ -73,6 +76,7 @@ def findClusters(means, items):
         result[index].append(item)
     return result
 
+
 # MAGIC FUNCTION. find mean with minimum distance and clasify item
 def Classify(means, item):
     minimum = sys.maxsize
@@ -88,7 +92,7 @@ def Classify(means, item):
 def calcMeans(k, items, maxIterations=100000):
     minCol, maxCol = findMinMaxCol(items)
     means = initMeans(items, k, minCol, maxCol)
-
+    print(means)
     # clusterCounters - number of item in class
     clusterCounters = [0 for i in range(len(means))]
     # element-cluster
@@ -107,15 +111,6 @@ def calcMeans(k, items, maxIterations=100000):
         if (flag):
             break
     return means
-
-def twoFeatures(items, pos1, pos2):
-    n = len(items)
-    X = []
-    for i in range(n):
-        item = items[i]
-        newItem = [item[pos1], item[pos2]]
-        X.append(newItem)
-    return X
 
 
 def plotting(clusters):
@@ -150,14 +145,13 @@ def main():
     k = 3
     means = calcMeans(k, items)
     clusters = findClusters(means, items)
-    items = twoFeatures(items, 2, 3)
     plotting(clusters)
     print('Means: ', means)
     print('Cluster: ', clusters)
 
     # check
     newItem = [5.4, 3.7, 1.5, 0.2]
-    print('New item cluster: ', Classify(means,newItem))
+    print('New item cluster: ', Classify(means, newItem))
 
 if __name__ == "__main__":
     main()
