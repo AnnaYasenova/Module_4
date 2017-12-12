@@ -2,39 +2,7 @@ from collections import Counter, defaultdict
 import numpy as np
 import pandas as pd
 
-# remove quotes
-def strip_quotations_newline(text):
-    text = text.rstrip()
-    if text[0] == '"':
-        text = text[1:]
-    if text[-1] == '"':
-        text = text[:-1]
-    return text
 
-# add spaces
-def expand_around_chars(text, characters):
-    for char in characters:
-        text = text.replace(char, " " + char + " ")
-    return text
-
-def split_text(text):
-    text = strip_quotations_newline(text)
-    text = expand_around_chars(text, '".,()[]{}:;')
-    splitted_text = text.split(" ")
-    cleaned_text = [x for x in splitted_text if len(x) > 1]
-    text_lowercase = [x.lower() for x in cleaned_text]
-    return text_lowercase
-
-
-def normalize_matrix(X):
-    nRow, nCol = np.shape(X)
-    X_norm = np.zeros(shape=(nRow, nCol))
-    X_norm[:, 0] = X[:, 0]
-    for i in range(1, nCol):
-        X_norm[:, i] = X[:, i] - np.mean(X[:, i])
-    return X_norm
-
-# load dataset
 def load_data():
     datafile = 'adult_data.csv'
     file_test = 'adult_test.csv'
@@ -55,9 +23,9 @@ def load_data():
 
           | y = 1  |  y = -1
 ----------+--------+-----------
-a(x) = 1  |  TP    |
+a(x) = 1  |  TP    |    TN
 ----------+--------+-----------
-a(x) = -1 |  FN    |
+a(x) = -1 |  FN    |    FP
 """
 def true_positives(determined_Y, real_Y, label):
     true_positives = 0
@@ -65,6 +33,7 @@ def true_positives(determined_Y, real_Y, label):
         if determined_Y[i] == label and real_Y[i] == label:
             true_positives += 1
     return true_positives
+
 
 def all_positives(determined_Y, label):
     return Counter(determined_Y)[label]
@@ -98,6 +67,7 @@ def f1_score(determined_Y, real_Y, label=1):
         return 0
     f1 = 2 * (p * r) / (p + r)
     return f1
+
 
 class NaiveBaseClass:
     def calculate_relative_occurences(self, lst):
@@ -136,6 +106,7 @@ class NaiveBayes(NaiveBaseClass):
             for j in range(0, colNum):
                 self.nb_dict[label][j] = self.calculate_relative_occurences(self.nb_dict[label][j])
 
+
     def classify_single_elem(self, X_elem):
         Y_dict = {}
         for label in self.labels:
@@ -157,6 +128,7 @@ class NaiveBayes(NaiveBaseClass):
             prediction = self.classify_single_elem(X_elem)
             self.predicted_Y_values.append(prediction)
         return self.predicted_Y_values
+
 
 def main():
     X_train, Y_train, X_test, Y_test = load_data()
